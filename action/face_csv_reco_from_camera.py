@@ -12,6 +12,7 @@ from util.ProjectRoad import getRoad
 # 人脸识别模型，提取128D的特征矢量
 # face recognition model, the object maps human faces into 128D vectors
 # Refer this tutorial: http://dlib.net/python/index.html#dlib.face_recognition_model_v1
+# 2022-02-10:修改：调整读取face的cvs时，第一列为名字
 
 facerec = dlib.face_recognition_model_v1(getRoad() + "\\dlib\\dlib_face_recognition_resnet_model_v1.dat")
 
@@ -30,15 +31,17 @@ path_features_known_csv =getRoad()+ "\\data\\features_all.csv"
 csv_rd = pd.read_csv(path_features_known_csv, header=None)
 
 # 用来存放所有录入人脸特征的数组
-# the array to save the features of faces in the database
 features_known_arr = []
+# 用来存放所有录入人脸名字的数组
+name_known_arr = []
 
 # 读取已知人脸数据
 # print known faces
 for i in range(csv_rd.shape[0]):
     features_someone_arr = []
-    for j in range(0, len(csv_rd.ix[i, :])):
-        features_someone_arr.append(csv_rd.ix[i, :][j])
+    name_known_arr.append(csv_rd.loc[i, :][0])
+    for j in range(1, len(csv_rd.loc[i, :])):
+        features_someone_arr.append(csv_rd.loc[i, :][j])
     features_known_arr.append(features_someone_arr)
 
 print("Faces in Database：", len(features_known_arr))
@@ -120,14 +123,15 @@ while cap.isOpened():
                         e_distance_list.append(999999999)
                 # Find the one with minimum e distance
                 similar_person_num = e_distance_list.index(min(e_distance_list))
-                print("Minimum e distance with person", int(similar_person_num)+1)
+                # print("Minimum e distance with person", str(int(similar_person_num)+1))
+                print("Minimum e distance with person", name_known_arr[similar_person_num])
 
                 if min(e_distance_list) < 0.4:
                     # 在这里修改 person_1, person_2 ... 的名字
                     # 可以在这里改称 Jack, Tom and others
                     # Here you can modify the names shown on the camera
-                    name_namelist[k] = "Person "+str(int(similar_person_num)+1)
-                    print("May be person "+str(int(similar_person_num)+1))
+                    name_namelist[k] = name_known_arr[similar_person_num]
+                    print("May be person "+name_known_arr[similar_person_num])
                 else:
                     print("Unknown person")
 

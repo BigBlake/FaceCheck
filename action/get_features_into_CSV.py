@@ -77,7 +77,8 @@ def write_into_csv(path_faces_personX, path_csv):
 
 
 # 从csv中读取数据，计算128d特征的均值
-def compute_the_mean(path_csv_rd):
+# 2022-02-10：写入总文件时，第一列增加名字
+def compute_the_mean(faces, path_csv_rd):
     column_names = []
 
     # 128列特征
@@ -89,6 +90,7 @@ def compute_the_mean(path_csv_rd):
 
     # 存放128维特征的均值
     feature_mean = []
+    feature_mean.append(faces)
 
     for i in range(128):
         tmp_arr = rd["features_" + str(i + 1)]
@@ -116,7 +118,7 @@ def read_face():
         csv_rd = os.listdir(path_csv_rd)
         print("特征均值: ")
         for i in range(len(csv_rd)):
-            feature_mean = compute_the_mean(path_csv_rd + csv_rd[i])
+            feature_mean = compute_the_mean(faces[i], path_csv_rd + csv_rd[i])
             # print(feature_mean)
             print(path_csv_rd + csv_rd[i])
             writer.writerow(feature_mean)

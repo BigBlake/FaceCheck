@@ -48,7 +48,7 @@ def pre_clear():
 
 
 # clear the exist folders of faces and csv
-pre_clear()
+# pre_clear()
 
 # print(cap.isOpened()) #返回 true/false 检查初始化是否成功
 while cap.isOpened():
